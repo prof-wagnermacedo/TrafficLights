@@ -6,15 +6,40 @@ public class Semaforo {
     public static final char AMARELO = 'Y';
     public static final char VERDE = 'G';
 
-    // Atributo que indica a cor atual: inicia por vermelho
-    private char estado = VERMELHO;
+    private Long id;
+    private Character estado;
+    private Semaforo cruzamento;
 
-    public char getEstado() {
+    public Semaforo() {
+    }
+
+    public Semaforo(long id, char estado) {
+        this.id = id;
+        this.estado = estado;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public Character getEstado() {
         return estado;
     }
 
     public void setEstado(char estado) {
         this.estado = estado;
+    }
+
+    public Semaforo getCruzamento() {
+        return cruzamento;
+    }
+
+    public void setCruzamento(Semaforo cruzamento) {
+        this.cruzamento = cruzamento;
     }
 
 }

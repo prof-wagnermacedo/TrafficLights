@@ -1,5 +1,7 @@
 package semaforo.dao;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.stereotype.Service;
 import semaforo.domain.Semaforo;
 
@@ -10,14 +12,31 @@ import static semaforo.domain.Semaforo.VERMELHO;
 @Service
 public class SemaforoDao {
 
-    // Como só existe um sinal, então não é preciso usar uma lista aqui.
-    private final Semaforo semaforo = new Semaforo();
+    private final List<Semaforo> semaforos = new ArrayList<>();
+    private long count = 0;
 
-    public char getEstadoAtual() {
-        return this.semaforo.getEstado();
+    public SemaforoDao() {
+        this.addCruzamento();
+        this.addCruzamento();
     }
 
-    public void setEstadoAtual(char estado) {
+    public final void addCruzamento() {
+        Semaforo smfA = new Semaforo(++count, VERMELHO);
+        Semaforo smfB = new Semaforo(++count, VERDE);
+
+        smfA.setCruzamento(smfB);
+        smfB.setCruzamento(smfA);
+
+        semaforos.add(smfA);
+        semaforos.add(smfB);
+    }
+
+    public char getEstadoAtual(long id) {
+        Semaforo smf = this.find(id);
+        return smf.getEstado();
+    }
+
+    public void setEstadoAtual(long id, char estado) {
         // Impede um estado inválido
         switch (estado) {
             case VERMELHO:
@@ -28,7 +47,31 @@ public class SemaforoDao {
                 throw new IllegalArgumentException("Estado inválido: " + estado);
         }
 
-        semaforo.setEstado(estado);
+        // Define o estado do sinal informado
+        Semaforo smf = this.find(id);
+        smf.setEstado(estado);
+
+        // Garante a consistência do cruzamento
+        Semaforo cruz = smf.getCruzamento();
+        if (estado == VERMELHO) {
+            cruz.setEstado(VERDE);
+        } else {
+            cruz.setEstado(VERMELHO);
+        }
+    }
+
+    public Semaforo find(long id) {
+        for (Semaforo smf : this.semaforos) {
+            if (id == smf.getId()) {
+                return smf;
+            }
+        }
+
+        return null;
+    }
+
+    public List<Semaforo> findAll() {
+        return this.semaforos;
     }
 
 }
