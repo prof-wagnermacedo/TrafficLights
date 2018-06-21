@@ -13,6 +13,10 @@ public class Semaforo {
     public Semaforo() {
     }
 
+    public Semaforo(Character estado) {
+        this.estado = estado;
+    }
+
     public Semaforo(long id, char estado) {
         this.id = id;
         this.estado = estado;
